@@ -137,9 +137,10 @@ function groupByTitleId<T extends { title: ComponentTitle }>(entries: T[]) {
 }
 
 /**
- * Generate one test file per component so that Jest can
+ * Generate one test file per component or story so that Jest can
  * run them in parallel.
  */
+const generateOneFilePerStory = true
 export const transformPlaywrightJson = (index: V3StoriesIndex | V4Index | UnsupportedVersion) => {
   let titleIdToEntries: Record<string, V4Entry[]>;
   if (index.v === 3) {
@@ -185,11 +186,24 @@ export const transformPlaywrightJson = (index: V3StoriesIndex | V4Index | Unsupp
               }),
             ]);
           });
-        const program = t.program([makeDescribe(stories[0].title, storyTests)]);
+        if (generateOneFilePerStory) {
+          storyTests.map((storyTest, index) => {
+            const storyTitle = stories[index].name
+            const storyTestArray = [storyTest]
 
-        const { code } = generate(program, {});
+            const program = t.program([makeDescribe(`${stories[0].title}--${storyTitle}`, storyTestArray)]);
 
-        acc[titleId] = code;
+            const { code } = generate(program, {});
+
+            acc[`${titleId}--${storyTitle}`] = code;
+          })
+        } else {
+          const program = t.program([makeDescribe(stories[0].title, storyTests)]);
+
+          const { code } = generate(program, {});
+
+          acc[titleId] = code;
+        }
       }
       return acc;
     },
