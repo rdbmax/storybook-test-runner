@@ -28471,15 +28471,15 @@ var transformPlaywrightJson = /* @__PURE__ */ __name((index) => {
       });
       if (generateOneFilePerStory) {
         storyTests.map((storyTest, index2) => {
-          const storyTitle = stories[index2].name;
+          const storyId = stories[index2].id;
           const storyTestArray = [
             storyTest
           ];
           const program3 = t2.program([
-            makeDescribe(`${stories[0].title}--${storyTitle}`, storyTestArray)
+            makeDescribe(`${stories[0].title}--${stories[index2].name}`, storyTestArray)
           ]);
           const { code } = (0, import_generator2.default)(program3, {});
-          acc[`${titleId}--${storyTitle}`] = code;
+          acc[storyId] = code;
         });
       } else {
         const program3 = t2.program([

@@ -188,14 +188,14 @@ export const transformPlaywrightJson = (index: V3StoriesIndex | V4Index | Unsupp
           });
         if (generateOneFilePerStory) {
           storyTests.map((storyTest, index) => {
-            const storyTitle = stories[index].name
+            const storyId = stories[index].id
             const storyTestArray = [storyTest]
 
-            const program = t.program([makeDescribe(`${stories[0].title}--${storyTitle}`, storyTestArray)]);
+            const program = t.program([makeDescribe(`${stories[0].title}--${stories[index].name}`, storyTestArray)]);
 
             const { code } = generate(program, {});
 
-            acc[`${titleId}--${storyTitle}`] = code;
+            acc[storyId] = code;
           })
         } else {
           const program = t.program([makeDescribe(stories[0].title, storyTests)]);
